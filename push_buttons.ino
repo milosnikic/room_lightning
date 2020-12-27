@@ -9,7 +9,7 @@
 #define COLOR_ORDER GRB
 CRGB leds[NUM_LEDS];
 
-unsigned char colors[50][3] = {
+unsigned char colors[39][3] = {
   {220, 20, 60},
   {255, 0, 0},
   {255, 99, 71},
@@ -67,7 +67,7 @@ void setup() {
   digitalWrite(PSH_BTN_3, HIGH);
   Serial.begin(9600);
   FastLED.addLeds<WS2812B, DATA_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-  xTaskCreate(shineLedTape, "shineLedTape", 128, NULL, 1, &Handle_ledTapeShining);
+  xTaskCreate(shineLedTape, "shineLedTape", 100, NULL, 1, &Handle_ledTapeShining);
   xTaskCreate(checkIfButtonIsPressedWithDebounce, "task1", 64, (void *) PSH_BTN_1, 1, &Handle_pushButtons);
   xTaskCreate(checkIfButtonIsPressedWithDebounce, "task2", 64, (void *) PSH_BTN_2, 1, &Handle_pushButtons);
   xTaskCreate(checkIfButtonIsPressedWithDebounce, "task3", 64, (void *) PSH_BTN_3, 1, &Handle_pushButtons);
@@ -120,7 +120,7 @@ void checkIfButtonIsPressedWithDebounce(void * pvParameters) {
 }
 
 void shineLedTape(void * pvParameters) {
-  unsigned char selectedColor = 15;
+  unsigned char selectedColor = 17;
   unsigned char selectedMode = 4;
   Serial.println("shine led entered");
   while (1) {
@@ -219,18 +219,20 @@ void cycleThroughColors() {
 }
 
 void fadeColor(unsigned char red, unsigned char green, unsigned char blue) {
-  for (unsigned char brightness = 0; brightness < 220; brightness += 5) {
+  for (int brightness = 0; brightness <= 255; brightness += 5) {
+    Serial.println("First loop " + String(brightness));
     FastLED.setBrightness(brightness);
     shineOneColor(red, green, blue);
     vTaskDelay( 50 / portTICK_PERIOD_MS );
   }
   vTaskDelay( 1000 / portTICK_PERIOD_MS );
-  for (unsigned char brightness = 220; brightness >= 0; brightness -= 5) {
+   for (int brightness = 255; brightness >= 0; brightness -= 5) {
+    Serial.println("Second loop " + String(brightness));
     FastLED.setBrightness(brightness);
     shineOneColor(red, green, blue);
     vTaskDelay( 50 / portTICK_PERIOD_MS );
   }
-  vTaskDelay( 10200 / portTICK_PERIOD_MS );
+  vTaskDelay( 1200 / portTICK_PERIOD_MS );
 }
 
 void runningLine(unsigned char lineLength, short delayDuration, unsigned char red, unsigned char green, unsigned char blue) {

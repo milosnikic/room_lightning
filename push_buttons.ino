@@ -219,15 +219,13 @@ void cycleThroughColors() {
 }
 
 void fadeColor(unsigned char red, unsigned char green, unsigned char blue) {
-  for (int brightness = 0; brightness <= 255; brightness += 5) {
-    Serial.println("First loop " + String(brightness));
+  for (short brightness = 0; brightness <= 255; brightness += 5) {
     FastLED.setBrightness(brightness);
     shineOneColor(red, green, blue);
     vTaskDelay( 50 / portTICK_PERIOD_MS );
   }
   vTaskDelay( 1000 / portTICK_PERIOD_MS );
-   for (int brightness = 255; brightness >= 0; brightness -= 5) {
-    Serial.println("Second loop " + String(brightness));
+   for (short brightness = 255; brightness >= 0; brightness -= 5) {
     FastLED.setBrightness(brightness);
     shineOneColor(red, green, blue);
     vTaskDelay( 50 / portTICK_PERIOD_MS );
